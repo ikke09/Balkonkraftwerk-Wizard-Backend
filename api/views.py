@@ -1,9 +1,19 @@
-from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
 from api.models import Version
 
-# Create your views here.
 
-
+@api_view(['GET'])
 def version(request):
-    return JsonResponse(Version().json(), safe=False)
+    return Response(Version(0, 0, 1).json())
+
+
+@api_view(['POST'])
+def balcony(request):
+    return Response("Nothing to see here!")
+
+
+@api_view(['POST'])
+def kpi(request):
+    return Response("Nothing to see here!")

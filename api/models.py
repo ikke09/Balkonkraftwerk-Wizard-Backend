@@ -1,10 +1,10 @@
-from django.db import models
 
+class Version():
 
-class Version(models.Model):
-    major = models.PositiveIntegerField(verbose_name="MAJOR", default=0)
-    minor = models.PositiveIntegerField(verbose_name="MINOR", default=0)
-    patch = models.PositiveIntegerField(verbose_name="PATCH", default=1)
+    def __init__(self, major=0, minor=0, patch=1):
+        self.major = major
+        self.minor = minor
+        self.patch = patch
 
     def __str__(self):
         return str(self.major)+"."+str(self.minor)+"."+str(self.patch)

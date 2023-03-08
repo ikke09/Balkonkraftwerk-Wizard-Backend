@@ -1,2 +1,3 @@
-# balkonkraftwerk-wizard
-Prototyp App in order to get a better feeling for balcony power plants and what their advantages are
+# Balkonkraftwerk-Wizard-Backend
+
+The backend for the [Balkonkraftwerk-Wizard](https://github.com/ikke09/Balkonkraftwerk-Wizard/) App.

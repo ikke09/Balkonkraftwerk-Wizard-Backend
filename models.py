@@ -45,3 +45,31 @@ class VersionModel():
             "Patch": self.patch,
             "Version": self.__str__()
         }
+
+class Corner:
+
+    def __init__(self, x: int = 0, y: int = 0) -> None:
+        self.x = x
+        self.y = y
+
+    def json(self):
+        return {
+            'X': self.x,
+            'Y': self.y
+        }
+
+
+class BalconyResult():
+
+    def __init__(self) -> None:
+        self.area = 0
+        self.boundary = None
+        self.corners: list[Corner] = None
+
+    def json(self):
+        return {
+            'Area': self.area,
+            'Width': self.boundary[2],
+            'Height': self.boundary[3],
+            'Corners': [c.json() for c in self.corners]
+        }

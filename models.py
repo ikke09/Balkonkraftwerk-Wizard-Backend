@@ -11,12 +11,6 @@ class BalconyModel():
         self.img = None
         self.width = int(data.get('width', 0))
         self.height = int(data.get('height', 0))
-        if self.base64 and len(self.base64) > 0:
-            base64_decoded = base64.b64decode(self.base64)
-            image = Image.open(io.BytesIO(base64_decoded))
-            self.width = image.width
-            self.height = image.height
-            self.img = np.array(image)
         self.url = data.get('url', '')
 
     def json(self):
@@ -46,7 +40,7 @@ class VersionModel():
             "Version": self.__str__()
         }
 
-class Corner:
+class Corner():
 
     def __init__(self, x: int = 0, y: int = 0) -> None:
         self.x = x

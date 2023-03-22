@@ -38,7 +38,13 @@ def create_app(test_config=None):
     def balcony():
         data = request.get_json()
         balcony = BalconyModel(data)
-        return extract_metadata(balcony=balcony).json()
+        if balcony.base64 is '':
+            raise exceptions.BadRequest("Image must be encoded as base64")
+        res = extract_metadata(balcony=balcony)
+        if res is None:
+            raise exceptions.BadRequest("Image could not be processed")
+        return res.json()
+        
 
     @app.post("/api/kpi")
     def kpi():

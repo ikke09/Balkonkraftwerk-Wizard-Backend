@@ -1,10 +1,9 @@
 import base64
-import io
 
 import cv2
 import numpy as np
 
-from models import BalconyModel, BalconyResult
+from models import BalconyModel, BalconyResult, Corner
 
 def _prepare_image(img):
     img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -30,12 +29,13 @@ def _find_contour(img):
 
 def _get_corners(rect):
     x, y, w, h = rect
-    return ((x, y), (x+w, y), (x+w, y+h), (x, y+h))
+    return (Corner(x, y), Corner(x+w, y), Corner(x+w, y+h), Corner(x, y+h))
 
 
 def _base64_to_image(data: str):
     base64_decoded = base64.b64decode(data)
-    return np.frombuffer(io.BytesIO(base64_decoded))
+    nparr = np.fromstring(base64_decoded, np.uint8)
+    return cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
 
 def extract_metadata(balcony: BalconyModel) -> BalconyResult | None:
@@ -43,8 +43,11 @@ def extract_metadata(balcony: BalconyModel) -> BalconyResult | None:
         return None
 
     res = BalconyResult()
-    img = _base64_to_image(balcony.base64)
-    img_prep = _prepare_image(img)
+    res.img = _base64_to_image(balcony.base64)
+    if res.img is None or len(res.img) is 0:
+        return None
+
+    img_prep = _prepare_image(res.img)
     rect, area = _find_contour(img_prep)
     res.corners = _get_corners(rect)
     res.area = area

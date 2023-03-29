@@ -1,10 +1,23 @@
-from PIL import Image
-import base64
-import io
-import numpy as np
+class BaseModel():
+
+    def json(self):
+        """Retrieve model as JSON"""
+        pass
 
 
-class BalconyModel():
+class Coords(BaseModel):
+    def __init__(self, lat: float, lng: float) -> None:
+        self.latitude = lat
+        self.longitude = lng
+
+    def json(self):
+        return {
+            "latitude": self.latitude,
+            "longitude": self.longitude
+        }
+
+
+class BalconyModel(BaseModel):
 
     def __init__(self, data: dict):
         self.base64 = data.get('img', '')
@@ -22,7 +35,7 @@ class BalconyModel():
         }
 
 
-class VersionModel():
+class VersionModel(BaseModel):
 
     def __init__(self, major=0, minor=0, patch=1):
         self.major = major
@@ -40,7 +53,8 @@ class VersionModel():
             "Version": self.__str__()
         }
 
-class Corner():
+
+class Corner(BaseModel):
 
     def __init__(self, x: int = 0, y: int = 0) -> None:
         self.x = x
@@ -53,12 +67,12 @@ class Corner():
         }
 
 
-class BalconyResult():
+class BalconyResult(BaseModel):
 
     def __init__(self) -> None:
         self.area = 0
-        self.boundary = None
-        self.corners: list[Corner] = None
+        self.boundary: tuple[int, int, int, int] = (0, 0, 0, 0)
+        self.corners: list[Corner] = []
 
     def json(self):
         return {

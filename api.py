@@ -1,9 +1,14 @@
 from werkzeug import exceptions
 from flask import Flask, request
 import os
+from coords import get_coords
 
 from models import BalconyModel, VersionModel
 from balcony_metadata import extract_metadata
+
+from dotenv import load_dotenv
+load_dotenv()
+
 
 def create_app(test_config=None):
     # create and configure the app
@@ -28,23 +33,40 @@ def create_app(test_config=None):
 
     @app.errorhandler(exceptions.BadRequest)
     def handle_bad_request(e):
-        return 'bad request!', 400
+        return {
+            'status': 400,
+            'message': f'{e}',
+        }
 
     @app.get("/api")
     def version():
         return VersionModel().json()
 
+    @app.get("/api/coords")
+    def coords():
+        zip_param = request.args.get('zip')
+        if not zip_param:
+            raise exceptions.BadRequest("zip param missing!")
+        city = request.args.get('city')
+        if not city:
+            raise exceptions.BadRequest("city param missing!")
+        zip = int(zip_param)
+        coordinates = get_coords(zip, city)
+        if coordinates is None:
+            raise exceptions.BadRequest(
+                f"Could not retrieve coordinates for {zip}")
+        return coordinates.json()
+
     @app.post("/api/balcony")
     def balcony():
         data = request.get_json()
         balcony = BalconyModel(data)
-        if balcony.base64 is '':
+        if balcony.base64 == '':
             raise exceptions.BadRequest("Image must be encoded as base64")
         res = extract_metadata(balcony=balcony)
         if res is None:
             raise exceptions.BadRequest("Image could not be processed")
         return res.json()
-        
 
     @app.post("/api/kpi")
     def kpi():

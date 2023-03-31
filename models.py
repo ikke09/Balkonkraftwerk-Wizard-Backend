@@ -109,3 +109,19 @@ class UserDataViewModel:
         self.UserLocation = Coords(data.get('UserLocation'))
         self.UserConsumption = UserConsumption(data.get('UserConsumption'))
         self.TimePeriod = data.get('TimePeriod', 1)
+
+
+class MastrModel(BaseModel):
+    def __init__(self):
+        self.id = ''
+        self.name = ''
+        self.state = ''
+        self.zipCode = 0
+        self.street = ''
+
+    def json(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "adress": f'{self.street}, {self.zipCode}, {self.state}',
+        }

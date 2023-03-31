@@ -57,6 +57,16 @@ def create_app(test_config=None):
                 f"Could not retrieve coordinates for {zip}")
         return coordinates.json()
 
+    @app.get("/api/info")
+    def info():
+        return [{
+            "question": "Was sind Balkonkraftwerke?",
+            "answer": "Kompakte Solaranlagen"
+        }, {
+            "question": "Was ist die Solaranlage auf dem Dach?",
+            "answer": "Photovoltaik"
+        }], 200
+
     @app.post("/api/balcony")
     def balcony():
         data = request.get_json()
@@ -73,5 +83,19 @@ def create_app(test_config=None):
         data = request.get_json()
         context = UserDataViewModel(data)
         return "OK"
+
+    @app.get("/api/ar")
+    def ar():
+        return "AR-Modell", 200
+
+    @app.get("/api/checklist")
+    def checklist():
+        return ["Eignen sich die örtlichen Gegebenheiten für den Anschluss eines Stecker-Solargerätes? Ist dort möglichst viel Sonne?", "Sind der Montageort, die Steckdose und der Stromkreis auf dem aktuellen Stand?", "Sind Vermieter:in oder Eigentümergemeinschaft einverstanden?", "Welche Anforderungen stellt der Netzbetreiber und der eventuelle Fördergeber?", "Haben Sie das passende Angebot gefunden, das alle Anforderungen erfüllt? (Technik, Preis/Leistung, Lieferung, Montage und Anschluss, DGS-Sicherheitsstandard/künftig Gerätenorm)", "Haben Sie ans Monitoring gedacht, um die Leistung zu checken?", "Haben Sie Fachleute oder eine örtliche Selbstbaugruppe an der Hand, die Sie im Zweifel fragen können?", "Ist alles klar mit der Anmeldung und einem eventuell nötigen Zählertausch?"], 200
+
+    @app.get("/api/mastr")
+    def mastr():
+        query = request.args.get('q')
+        data = mastr.get_data(query)
+        return data, 200
 
     return app

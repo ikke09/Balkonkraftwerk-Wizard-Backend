@@ -3,7 +3,7 @@ from flask import Flask, request
 import os
 from coords import get_coords
 
-from models import BalconyModel, VersionModel
+from models import BalconyModel, VersionModel, UserDataViewModel
 from balcony_metadata import extract_metadata
 
 from dotenv import load_dotenv
@@ -70,6 +70,8 @@ def create_app(test_config=None):
 
     @app.post("/api/kpi")
     def kpi():
-        return "<p>Hello, World!</p>"
+        data = request.get_json()
+        context = UserDataViewModel(data)
+        return "OK"
 
     return app

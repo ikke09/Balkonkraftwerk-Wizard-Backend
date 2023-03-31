@@ -1,3 +1,6 @@
+import json
+
+
 class BaseModel():
 
     def json(self):
@@ -81,3 +84,28 @@ class BalconyResult(BaseModel):
             'Height': self.boundary[3],
             'Corners': [c.json() for c in self.corners]
         }
+
+
+class BalconyViewModel:
+    def __init__(self, data: dict):
+        self.area = data.get('area')
+        self.alignment = data.get('alignment')
+        self.shadowing = data.get('shadowing')
+        self.angle = data.get('angle')
+
+
+class UserConsumption:
+
+    def __init__(self, data: dict):
+        self.amount = data.get('amount')
+        self.price = data.get('price')
+
+
+class UserDataViewModel:
+    def __init__(self, data: dict):
+        self.DataProcessingAccepted = data.get('DataProcessingAccepted', False)
+        self.BalconyImage = BalconyModel(data.get('BalconyImage'))
+        self.Balcony = BalconyViewModel(data.get('Balcony'))
+        self.UserLocation = Coords(data.get('UserLocation'))
+        self.UserConsumption = UserConsumption(data.get('UserConsumption'))
+        self.TimePeriod = data.get('TimePeriod', 1)

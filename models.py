@@ -1,127 +1,90 @@
 import json
-
-
-class BaseModel():
-
-    def json(self):
-        """Retrieve model as JSON"""
-        pass
+from pydantic import BaseModel
+import typing
 
 
 class Coords(BaseModel):
-    def __init__(self, lat: float, lng: float) -> None:
-        self.latitude = lat
-        self.longitude = lng
-
-    def json(self):
-        return {
-            "latitude": self.latitude,
-            "longitude": self.longitude
-        }
+    latitude: float
+    longitude: float
 
 
-class BalconyModel(BaseModel):
-
-    def __init__(self, data: dict):
-        self.base64 = data.get('img', '')
-        self.img = None
-        self.width = int(data.get('width', 0))
-        self.height = int(data.get('height', 0))
-        self.url = data.get('url', '')
-
-    def json(self):
-        return {
-            "Image": self.base64,
-            "Url": self.url,
-            "Width": self.width,
-            "Height": self.height
-        }
+class Corner(BaseModel):
+    x: int
+    y: int
 
 
-class VersionModel(BaseModel):
-
-    def __init__(self, major=0, minor=0, patch=1):
-        self.major = major
-        self.minor = minor
-        self.patch = patch
+class Version(BaseModel):
+    major: int = 0
+    minor: int = 0
+    patch: int = 1
 
     def __str__(self):
         return str(self.major)+"."+str(self.minor)+"."+str(self.patch)
 
-    def json(self):
-        return {
-            "Major": self.major,
-            "Minor": self.minor,
-            "Patch": self.patch,
-            "Version": self.__str__()
-        }
+
+class QAItem(BaseModel):
+    question: str
+    answer: str
 
 
-class Corner(BaseModel):
-
-    def __init__(self, x: int = 0, y: int = 0) -> None:
-        self.x = x
-        self.y = y
-
-    def json(self):
-        return {
-            'X': self.x,
-            'Y': self.y
-        }
+class ChecklistItem(BaseModel):
+    description: str
+    checked: bool = False
 
 
-class BalconyResult(BaseModel):
-
-    def __init__(self) -> None:
-        self.area = 0
-        self.boundary: tuple[int, int, int, int] = (0, 0, 0, 0)
-        self.corners: list[Corner] = []
-
-    def json(self):
-        return {
-            'Area': self.area,
-            'Width': self.boundary[2],
-            'Height': self.boundary[3],
-            'Corners': [c.json() for c in self.corners]
-        }
+class BalconyImageIn(BaseModel):
+    base64: str
+    img: typing.Any | None = None
+    width: int | None = 0
+    height: int | None = 0
+    url: str | None = None
 
 
-class BalconyViewModel:
-    def __init__(self, data: dict):
-        self.area = data.get('area')
-        self.alignment = data.get('alignment')
-        self.shadowing = data.get('shadowing')
-        self.angle = data.get('angle')
+class BalconyImageOut(BaseModel):
+    area: int = 0
+    boundary: tuple[int, int, int, int] = (0, 0, 0, 0)
+    corners: list[Corner] = []
 
 
-class UserConsumption:
-
-    def __init__(self, data: dict):
-        self.amount = data.get('amount')
-        self.price = data.get('price')
+class UserDataBalcony(BaseModel):
+    alignment: str = 'S'
+    shadowing: float = 1.0
 
 
-class UserDataViewModel:
-    def __init__(self, data: dict):
-        self.DataProcessingAccepted = data.get('DataProcessingAccepted', False)
-        self.BalconyImage = BalconyModel(data.get('BalconyImage'))
-        self.Balcony = BalconyViewModel(data.get('Balcony'))
-        self.UserLocation = Coords(data.get('UserLocation'))
-        self.UserConsumption = UserConsumption(data.get('UserConsumption'))
-        self.TimePeriod = data.get('TimePeriod', 1)
+class UserDataPV(BaseModel):
+    module_count: int = 2
+    module_power: int = 300
+    angle: int = 90
 
 
-class MastrModel(BaseModel):
-    def __init__(self):
-        self.id = ''
-        self.name = ''
-        self.state = ''
-        self.zipCode = 0
-        self.street = ''
+class UserDataConsumption(BaseModel):
+    amount: int
+    price: float
 
-    def json(self):
-        return {
-            "id": self.id,
-            "name": self.name,
-            "adress": f'{self.street}, {self.zipCode}, {self.state}',
-        }
+
+class UserDataIn(BaseModel):
+    DataProcessingAccepted: bool = False
+    Location: Coords
+    PV: UserDataPV
+    Balcony: UserDataBalcony
+    Consumption: UserDataConsumption
+    TimePeriod: int = 1
+
+
+class KpiResult(BaseModel):
+    energy_output_per_year: float = 0.0
+    amortization: float = 0.0
+    savings: float = 0.0
+    self_sufficiency: float = 0.0
+    self_consumption: float = 0.0
+
+
+class MastrDataOut(BaseModel):
+    id: str = ''
+    name: str = ''
+    state: str | None = None
+    zipCode: int | None = None
+    street: str | None = None
+
+    def __str__(self):
+        return f'{self.name} ({self.id}) - {self.street} {self.zipCode} {self.state}'

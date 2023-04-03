@@ -10,11 +10,10 @@
 # )
 
 
-from typing import List
-from models import MastrModel
+from models import MastrDataOut
 
 
-def get_data(query: str) -> List[MastrModel]:
+def get_data(query: str | None) -> list[MastrDataOut]:
     return []
     # Enter a context with an instance of the API client
     # with marktstammdaten.ApiClient(configuration) as api_client:

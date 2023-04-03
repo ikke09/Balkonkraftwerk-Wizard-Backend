@@ -11,19 +11,6 @@
       "program": "${file}",
       "console": "integratedTerminal",
       "justMyCode": true
-    },
-    {
-      "name": "Python: Flask",
-      "type": "python",
-      "request": "launch",
-      "module": "flask",
-      "env": {
-        "FLASK_APP": "api.py",
-        "FLASK_DEBUG": "1"
-      },
-      "args": ["run", "--debugger"],
-      "jinja": true,
-      "justMyCode": true
     }
   ]
 }

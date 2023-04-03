@@ -24,9 +24,7 @@ class Version(BaseModel):
     major: int = 0
     minor: int = 0
     patch: int = 1
-
-    def __str__(self):
-        return str(self.major)+"."+str(self.minor)+"."+str(self.patch)
+    version: str = f'{major}.{minor}.{patch}'
 
 
 class QAItem(BaseModel):

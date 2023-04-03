@@ -1,5 +1,5 @@
 import json
-from fastapi import FastAPI, Request, HTTPException
+from fastapi import FastAPI, HTTPException
 import uvicorn
 from coords import get_coords
 from kpi import calculate_kpi

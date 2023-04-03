@@ -13,6 +13,13 @@ class Corner(BaseModel):
     y: int
 
 
+class Boundary(BaseModel):
+    x: int
+    y: int
+    w: int
+    h: int
+
+
 class Version(BaseModel):
     major: int = 0
     minor: int = 0
@@ -42,7 +49,7 @@ class BalconyImageIn(BaseModel):
 
 class BalconyImageOut(BaseModel):
     area: int = 0
-    boundary: tuple[int, int, int, int] = (0, 0, 0, 0)
+    boundary: Boundary = Boundary(x=0, y=0, w=0, h=0)
     corners: list[Corner] = []
 
 

@@ -3,7 +3,7 @@ import base64
 import cv2
 import numpy as np
 
-from models import BalconyImageIn, BalconyImageOut, Corner
+from models import BalconyImageIn, BalconyImageOut, Corner, Boundary
 
 
 def _prepare_image(img):
@@ -14,18 +14,20 @@ def _prepare_image(img):
     return img_binary
 
 
-def _find_contour(img) -> tuple[tuple[int, int, int, int], int]:
+def _find_contour(img) -> tuple[Boundary, int]:
     contours, hierarchy = cv2.findContours(
         img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     best_cnt_area = -1
-    best_cnt_rect = None
+    best_cnt_rect: tuple[int, int, int, int] = (0, 0, 0, 0)
     for cnt in contours:
         rect = cv2.boundingRect(cnt)
         area = rect[2]*rect[3]  # width * height
         if area > best_cnt_area:
             best_cnt_area = area
             best_cnt_rect = rect
-    return (best_cnt_rect, best_cnt_area)  # type: ignore
+    boundary = Boundary(
+        x=best_cnt_rect[0], y=best_cnt_rect[1], w=best_cnt_rect[2], h=best_cnt_rect[3])
+    return (boundary, best_cnt_area)
 
 
 def _get_corners(rect) -> list[Corner]:

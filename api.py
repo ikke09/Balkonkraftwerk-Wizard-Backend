@@ -48,6 +48,9 @@ def balcony(data: BalconyImageIn) -> BalconyImageOut:
 @app.post("/api/kpi")
 def kpi(data: UserDataIn) -> KpiResult:
     res = calculate_kpi(data)
+    if res is None:
+        raise HTTPException(
+            status_code=400, detail="Datenverarbeitung nicht akzeptiert")
     return res
 
 

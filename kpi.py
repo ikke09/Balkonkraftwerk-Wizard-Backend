@@ -2,6 +2,44 @@ from models import KpiResult, UserDataIn
 from radiation import get_radiation
 
 
+def get_area_factor(angle: float, alignment: str) -> float:
+    return 1.0
+
+
+def get_performance_ratio() -> float:
+    return 0.75
+
+
+def get_peak_power(power: int, count: int) -> float:
+    module_power = power / 1000
+    total_power = count * module_power
+    # In germany the max power is 600Wp or 0.6kWp
+    kWp = total_power if total_power <= 0.6 else 0.6
+    return kWp
+
+
+def get_amortization_rate(savings: float) -> float:
+    # Assumption that the invest is 1000€
+    unit_price = 1000.0
+
+    # Amortization time in years
+    amortization_time = unit_price / savings
+    return amortization_time
+
+
+def get_self_consumption() -> float:
+    # Ciocia2021
+    # Self-Consumption SC = (local_consumed / total_generated)
+    # local_consumed = Direktverbrauchte Energie der PV-Anlage
+    return 0.66
+
+
+def get_self_sufficiency() -> float:
+    # Ciocia2021
+    # Sefl-Sufficiency SS = (local_consumed / total_consumed)
+    return 0.16
+
+
 def calculate_kpi(data: UserDataIn) -> KpiResult | None:
     if data.DataProcessingAccepted == False:
         return None
@@ -48,20 +86,38 @@ def calculate_kpi(data: UserDataIn) -> KpiResult | None:
     # TODO: Use the alignment of the PV
     alignment = data.Balcony.alignment
 
-    # Assumption that the invest is 1000€
-    unit_price = 1000.0
-
-    # Electricity bill of the user
-    electricity_bill = data.Consumption.amount * data.Consumption.price
-
     # Amortization time in years
-    amortization_time = (unit_price + electricity_bill) / savings_per_year
+    amortization_time = get_amortization_rate(savings_per_year)
 
     # TODO: Calculate the other KPIs
-    self_sufficiency = 0.16
-    self_consumption = 0.66
+    self_sufficiency = get_self_sufficiency()
+    self_consumption = get_self_consumption()
 
     result = KpiResult(energy_output_per_year=energy_output, amortization=amortization_time,
                        savings=savings_per_year, self_consumption=self_consumption, self_sufficiency=self_sufficiency)
 
+    return result
+
+
+def calculate_kpi2(data: UserDataIn) -> KpiResult | None:
+    if data.DataProcessingAccepted == False:
+        return None
+    # Wagner2010
+    # Wd = GA * Fa * (Ppk / E0) * PR
+    # Tagesenergieertrag (kWh) = Globalstrahlung * Flächenfaktor * (Peakleistung / Nennleistung) * Performance Ratio
+    GA = get_radiation(data.Location.latitude, data.Location.longitude, 2022)
+    Fa = get_area_factor(data.PV.angle, data.Balcony.alignment)
+    Ppk = get_peak_power(data.PV.module_power, data.PV.module_count)
+    E0 = 1000
+    PR = get_performance_ratio()
+    Wd = GA * Fa * (Ppk / E0) * PR
+    # Jahresenergieertrag (kWh) = 365 * Tagesenergieertrag
+    Wa = 365 * Wd
+    # Savings in €
+    savings_per_year = Wa * data.Consumption.price
+    self_consumption = get_self_consumption()
+    self_sufficiency = get_self_sufficiency()
+    amortization_rate = get_amortization_rate(savings_per_year)
+    result = KpiResult(energy_output_per_year=Wa, amortization=amortization_rate,
+                       savings=savings_per_year, self_consumption=self_consumption, self_sufficiency=self_sufficiency)
     return result

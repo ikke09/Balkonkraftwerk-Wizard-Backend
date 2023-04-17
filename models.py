@@ -6,6 +6,7 @@ import typing
 class Coords(BaseModel):
     latitude: float
     longitude: float
+    altitude: int
 
 
 class Corner(BaseModel):
@@ -80,8 +81,8 @@ class KpiResult(BaseModel):
     energy_output_per_year: float = 0.0
     amortization: float = 0.0
     savings: float = 0.0
-    self_sufficiency: float = 0.0
-    self_consumption: float = 0.0
+    savings_over_period: float = 0.0
+    price_per_kwh: float = 0.0
 
 
 class MastrDataOut(BaseModel):

@@ -54,8 +54,7 @@ def calculate_kpi(data: UserDataIn) -> KpiResult | None:
     # PR = Performance ratio, coefficient for losses (range between 0.5 and 0.9, default value = 0.75)
 
     # Annual solar radiation at the user location for 2022 in kWh/m2
-    radiation = get_radiation(Coords(latitude=data.Location.latitude,
-                              longitude=data.Location.longitude), 2022)
+    radiation = get_radiation(data.Location, 2022)
 
     # kW of the PV
     # module_powes is in W
@@ -94,7 +93,7 @@ def calculate_kpi(data: UserDataIn) -> KpiResult | None:
     self_consumption = get_self_consumption()
 
     result = KpiResult(energy_output_per_year=energy_output, amortization=amortization_time,
-                       savings=savings_per_year, self_consumption=self_consumption, self_sufficiency=self_sufficiency)
+                       savings=savings_per_year)
 
     return result
 
@@ -105,8 +104,7 @@ def calculate_kpi2(data: UserDataIn) -> KpiResult | None:
     # Wagner2010
     # Wd = GA * Fa * (Ppk / E0) * PR
     # Tagesenergieertrag (kWh) = Globalstrahlung * Flächenfaktor * (Peakleistung / Nennleistung) * Performance Ratio
-    GA = get_radiation(Coords(latitude=data.Location.latitude,
-                       longitude=data.Location.longitude), 2022)
+    GA = get_radiation(data.Location, 2022)
     Fa = get_area_factor(data.PV.angle, data.Balcony.alignment)
     Ppk = get_peak_power(data.PV.module_power, data.PV.module_count)
     E0 = 1000
@@ -120,5 +118,5 @@ def calculate_kpi2(data: UserDataIn) -> KpiResult | None:
     self_sufficiency = get_self_sufficiency()
     amortization_rate = get_amortization_rate(savings_per_year)
     result = KpiResult(energy_output_per_year=Wa, amortization=amortization_rate,
-                       savings=savings_per_year, self_consumption=self_consumption, self_sufficiency=self_sufficiency)
+                       savings=savings_per_year)
     return result

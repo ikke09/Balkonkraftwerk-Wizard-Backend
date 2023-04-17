@@ -3,6 +3,8 @@ from fastapi import FastAPI, HTTPException
 import uvicorn
 from coords import get_coords
 from kpi import calculate_kpi
+from kpi_pvgis import calculate_kpi_pvgis
+from kpi_pvlib import calculate_kpi_pvlib
 from models import Version, Coords, UserDataIn, KpiResult, BalconyImageIn, BalconyImageOut, QAItem, ChecklistItem, MastrDataOut
 from balcony_metadata import extract_metadata
 
@@ -59,6 +61,24 @@ def balcony(data: BalconyImageIn) -> BalconyImageOut:
 @app.post("/api/kpi")
 def kpi(data: UserDataIn) -> KpiResult:
     res = calculate_kpi(data)
+    if res is None:
+        raise HTTPException(
+            status_code=400, detail="Datenverarbeitung nicht akzeptiert")
+    return res
+
+
+@app.post("/api/pvlib")
+def pvlib(data: UserDataIn) -> KpiResult:
+    res = calculate_kpi_pvlib(data)
+    if res is None:
+        raise HTTPException(
+            status_code=400, detail="Datenverarbeitung nicht akzeptiert")
+    return res
+
+
+@app.post("/api/pvgis")
+def pvgis(data: UserDataIn) -> KpiResult:
+    res = calculate_kpi_pvgis(data)
     if res is None:
         raise HTTPException(
             status_code=400, detail="Datenverarbeitung nicht akzeptiert")

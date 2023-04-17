@@ -7,6 +7,8 @@ from models import Version, Coords, UserDataIn, KpiResult, BalconyImageIn, Balco
 from balcony_metadata import extract_metadata
 
 from dotenv import load_dotenv
+
+from radiation import get_radiation
 load_dotenv()
 
 app = FastAPI()
@@ -24,6 +26,15 @@ def coords(zip: int, city: str) -> Coords:
         raise HTTPException(
             status_code=400, detail=f"Could not retrieve coordinates for {zip}")
     return coordinates
+
+
+@app.post("/api/radiation")
+def radiation(coordinates: Coords) -> float:
+    radiation = get_radiation(coordinates, 2022)
+    if radiation is None:
+        raise HTTPException(
+            status_code=400, detail=f"Could not retrieve radiation for {coordinates}")
+    return radiation
 
 
 @app.get("/api/info")

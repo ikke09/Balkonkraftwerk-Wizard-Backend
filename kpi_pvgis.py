@@ -8,9 +8,10 @@ pvgis_url = "https://re.jrc.ec.europa.eu/api/PVcalc"
 def calculate_kpi_pvgis(data: UserDataIn) -> KpiResult | None:
     if data.DataProcessingAccepted == False:
         return None
-    orientation = {'S': 0.0, 'N': 180.0, 'W': 90.0,
-                   'O': 270.0}[data.Balcony.alignment]
-    investion = 1000.0
+    orientation = {'S': 0.0, 'SW': 45.0, 'W': 90.0, 'NW': 135.0, 'N': -180.0,
+                   'NO': -135.0, 'O': -90.0, 'SO': -45.0}[data.Balcony.alignment]
+    invest = data.PV.investment
+    self_consumption = 0.70
     params = {
         "lat": data.Location.latitude,
         "lon": data.Location.longitude,
@@ -20,7 +21,7 @@ def calculate_kpi_pvgis(data: UserDataIn) -> KpiResult | None:
         "loss": 14.0,
         "aspect": orientation,
         "pvprice": 1,
-        "systemcost": investion,
+        "systemcost": invest,
         "interest": 0.0,
         "lifetime": data.TimePeriod,
         "outputformat": "json",
@@ -31,10 +32,15 @@ def calculate_kpi_pvgis(data: UserDataIn) -> KpiResult | None:
         result = response.json()
         totals_result = result["outputs"]["totals"]["fixed"]
         energy_output_per_year = totals_result["E_y"]
-        savings = (energy_output_per_year * data.Consumption.price) / 100
-        savings_over_period = savings * data.TimePeriod - investion
-        amortization = investion / savings
+        usable_energy_per_year = energy_output_per_year * self_consumption
+        savings = (usable_energy_per_year * data.Consumption.price) / 100
+        savings_over_period = savings * data.TimePeriod - invest
+        amortization = invest / savings
         price_per_kwh = totals_result["LCOE_pv"]
-        return KpiResult(energy_output_per_year=energy_output_per_year, amortization=amortization, savings=savings, savings_over_period=savings_over_period, price_per_kwh=price_per_kwh)
+        return KpiResult(energy_output_per_year=energy_output_per_year,
+                         usable_energy_per_year=usable_energy_per_year,
+                         amortization=amortization, savings=savings,
+                         savings_over_period=savings_over_period,
+                         price_per_kwh=price_per_kwh)
     else:
         return None

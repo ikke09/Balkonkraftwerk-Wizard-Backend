@@ -54,13 +54,14 @@ class BalconyImageOut(BaseModel):
 
 class UserDataBalcony(BaseModel):
     alignment: str = 'S'
-    shadowing: float = 1.0
+    shadowing: float = 0.0
 
 
 class UserDataPV(BaseModel):
     module_count: int = 2
     module_power: int = 300
     angle: int = 90
+    investment: int = 1000
 
 
 class UserDataConsumption(BaseModel):
@@ -79,6 +80,7 @@ class UserDataIn(BaseModel):
 
 class KpiResult(BaseModel):
     energy_output_per_year: float = 0.0
+    usable_energy_per_year: float = 0.0
     amortization: float = 0.0
     savings: float = 0.0
     savings_over_period: float = 0.0

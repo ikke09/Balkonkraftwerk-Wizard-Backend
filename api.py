@@ -1,5 +1,7 @@
 import json
+import os
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import FileResponse
 import uvicorn
 from coords import get_coords
 from kpi import calculate_kpi
@@ -86,8 +88,9 @@ def pvgis(data: UserDataIn) -> KpiResult:
 
 
 @app.get("/api/ar")
-def ar():
-    return "AR-Modell", 200
+def ar() -> FileResponse:
+    filename = "pv.gltf"
+    return FileResponse(filename, media_type="model/gltf+json")
 
 
 @app.get("/api/checklist")

@@ -54,7 +54,7 @@ class BalconyImageOut(BaseModel):
 
 class UserDataBalcony(BaseModel):
     alignment: str = 'S'
-    shadowing: float = 0.0
+    shadowing: str = 'None'
 
 
 class UserDataPV(BaseModel):
@@ -65,8 +65,8 @@ class UserDataPV(BaseModel):
 
 
 class UserDataConsumption(BaseModel):
-    amount: int
-    price: float
+    amount: int = 2500
+    price: int = 40
 
 
 class UserDataIn(BaseModel):
@@ -85,6 +85,8 @@ class KpiResult(BaseModel):
     savings: float = 0.0
     savings_over_period: float = 0.0
     price_per_kwh: float = 0.0
+    self_consumption: float = 0.0
+    realistic_savings: float = 0.0
 
 
 class MastrDataOut(BaseModel):

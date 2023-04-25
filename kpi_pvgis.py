@@ -33,7 +33,9 @@ def calculate_kpi_pvgis(data: UserDataIn) -> KpiResult | None:
         totals_result = result["outputs"]["totals"]["fixed"]
         energy_output_per_year = totals_result["E_y"]
         usable_energy_per_year = energy_output_per_year * self_consumption
-        savings = (usable_energy_per_year * data.Consumption.price) / 100
+        energy_price_in_eur = data.Consumption.price / 100
+        savings = usable_energy_per_year * energy_price_in_eur
+        realistic_savings = savings * self_consumption
         savings_over_period = savings * data.TimePeriod - invest
         amortization = invest / savings
         price_per_kwh = totals_result["LCOE_pv"]
@@ -41,6 +43,8 @@ def calculate_kpi_pvgis(data: UserDataIn) -> KpiResult | None:
                          usable_energy_per_year=usable_energy_per_year,
                          amortization=amortization, savings=savings,
                          savings_over_period=savings_over_period,
-                         price_per_kwh=price_per_kwh)
+                         price_per_kwh=price_per_kwh,
+                         self_consumption=self_consumption,
+                         realistic_savings=realistic_savings)
     else:
         return None

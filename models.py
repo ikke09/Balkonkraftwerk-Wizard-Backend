@@ -93,9 +93,10 @@ class MastrDataOut(BaseModel):
     id: str = ''
     name: str = ''
     state: str | None = None
-    zip_code: int | None = None
+    zip: int | None = None
     city: str | None = None
     street: str | None = None
+    link: str | None = None
 
     def __str__(self):
-        return f'{self.name} ({self.id}) - {self.street} {self.zip_code} {self.state}'
+        return f'{self.name} ({self.id}) - {self.street} {self.zip} {self.state}'

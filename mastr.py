@@ -1,31 +1,26 @@
 import pandas as pd
 from models import MastrDataOut
+import requests
 
 
-def _map_to_MastrDataOut(index, row: pd.Series) -> MastrDataOut:
+def extract_data_item(item):
     return MastrDataOut(
-        id=index,
-        name=row['Name'],
-        state=row['Bundesland'],
-        zip_code=row['PLZ'],
-        city=row['Ort'],
-        street=f"{row['Straße']} {row['Hausnummer']}",
+        id=item['MaStRNummer'],
+        name=item['NameConcealed'],
+        state=item['Bundesland'],
+        zip=int(item['Postleitzahl']),
+        city=item['OrtConcealed'],
+        street=f"{item['StrasseConcealed']} {item['HausnummerConcealed']}",
+        link=f"https://www.marktstammdatenregister.de/MaStR/Akteur/Marktakteur/DetailOeffentlich/{item['Id']}"
     )
 
 
-def get_data(query: int | None) -> list[MastrDataOut]:
-    columns = ['MaStR-Nr.', 'Name des Marktakteurs', 'Bundesland',
-               'Postleitzahl', 'Ort', 'Straße', 'Hausnummer', 'Tätigkeitsstatus']
-    data = pd.read_csv('Public_Electricity_Provider.csv',
-                       sep=';', index_col=0, header=0, usecols=columns)
-    names = ["ID", "Name", "Bundesland", "PLZ",
-             "Ort", "Straße", "Hausnummer", "Status"]
-    data.rename(columns=dict(zip(columns, names)), inplace=True)
-    data.index.names = [names[0]]
-    active_providers = data[data['Status'] == 'Aktiv']
-    if query:
-        active_providers = active_providers[active_providers['PLZ'] == query]
+def get_data(zip_code: int | None = None):
+    url = "https://www.marktstammdatenregister.de/MaStR/Akteur/MarktakteurJson/GetOeffentlicheMarktakteure?page=1&pageSize=1000&filter=T%C3%A4tigkeitsstatus~eq~%272511%27~and~MaStR-Nr.~sw~%27SNB%27"
+    if zip_code:
+        url += f"~and~Postleitzahl~eq~%27{zip_code}%27"
 
-    out = [_map_to_MastrDataOut(index, row)
-           for index, row in active_providers.iterrows()]
-    return out
+    response = requests.get(url)
+    data = response.json()
+    results = [extract_data_item(item) for item in data['Data']]
+    return results

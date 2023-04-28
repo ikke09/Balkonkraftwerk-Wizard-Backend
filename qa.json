@@ -1,10 +1,34 @@
 [
     {
         "question": "Was sind Balkonkraftwerke?",
-        "answer": "Kompakte Solaranlagen"
+        "answer": "Balkonkraftwerke sind kleine Fotovoltaik-Anlagen. Diese bestehen in der Regel aus ein bis zwei Solarmodulen, die zwischen 200 und 400 Watt in der Spitze liefern können."
     },
     {
-        "question": "Was ist die Solaranlage auf dem Dach?",
-        "answer": "Photovoltaik"
+        "question": "Wie wird das Balkonkraftwerk installiert?",
+        "answer": "Bei diesen Systemen handelt es sich um Plug-and-play-Systeme. Eine Installation benötigt nicht zwangsweise eine Fachkraft und kann einfach über eine Steckdose als Erzeuger an das Stromnetz angeschlossen werden."
+    },
+    {
+        "question": "Aus welchen Bestandteilen besteht eine Anlage?",
+        "answer": "Eine Anlage besteht nur aus vier fundamentalen Bestandteilen. Dem Solarmodul, einem Wechselrichter, der Steckerverbindung und Befestigung."
+    },
+    {
+        "question": "Wie viele Anlagen gibt es bereits?",
+        "answer": "Eine Erhebung der Hochschule für Technik und Wirtschaft Berlin (HTW) hat ergeben, dass Ende 2021 etwa 200.000 Anlagen in Deutschland betrieben wurden."
+    },
+    {
+        "question": "Muss ich die Anlage anmelden?",
+        "answer": "Ja, die Anlage muss zum Einen beim Marktstammdatenregister (MaStR) der Bundesnetzagentur angemeldet werden und zum Anderen beim lokalen Netzbetreiber."
+    },
+    {
+        "question": "Welche Vorteile hat ein Balkonkraftwerk?",
+        "answer": "Umweltschonende Energieerzeugung, Kostensenkung, Reduzierung des Stromverbrauchs, Einfache Installation."
+    },
+    {
+        "question": "Welche Nachteile hat ein Balkonkraftwerk?",
+        "answer": "Lange Lieferzeiten, Wetterabhängiger Ertrag, Richtige Vorraussetzungen müssen gegeben sein"
+    },
+    {
+        "question": "Was sind die Vorraussetzungen für ein Balkonkraftwerk?",
+        "answer": "Außenliegende Steckdose, Moderner Stromzähler, Einwilligung von Vermieter/Eigentümergemeinschaft, Anmeldung beim MaStR und Netzbetreiber"
     }
 ]

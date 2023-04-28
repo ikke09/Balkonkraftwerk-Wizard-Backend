@@ -8,6 +8,7 @@ from kpi_pvgis import calculate_kpi_pvgis
 from kpi_pvlib import calculate_kpi_pvlib
 from models import Version, Coords, UserDataIn, KpiResult, BalconyImageIn, BalconyImageOut, QAItem, ChecklistItem, MastrDataOut
 from balcony_metadata import extract_metadata
+from mastr import get_data
 
 from dotenv import load_dotenv
 
@@ -103,8 +104,8 @@ def checklist() -> list[ChecklistItem]:
 
 
 @app.get("/api/mastr")
-def mastr(q: str | None) -> list[MastrDataOut]:
-    data = mastr.get_data(q)
+def mastr(q: int | None = None) -> list[MastrDataOut]:
+    data = get_data(q)
     return data
 
 

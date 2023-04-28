@@ -15,10 +15,10 @@ def extract_data_item(item):
     )
 
 
-def get_data(zip_code: int | None = None):
+def get_data(city: str | None = None):
     url = "https://www.marktstammdatenregister.de/MaStR/Akteur/MarktakteurJson/GetOeffentlicheMarktakteure?page=1&pageSize=1000&filter=T%C3%A4tigkeitsstatus~eq~%272511%27~and~MaStR-Nr.~sw~%27SNB%27"
-    if zip_code:
-        url += f"~and~Postleitzahl~eq~%27{zip_code}%27"
+    if city:
+        url += f"~and~Ort~ct~'{city}'"
 
     response = requests.get(url)
     data = response.json()

@@ -104,8 +104,8 @@ def checklist() -> list[ChecklistItem]:
 
 
 @app.get("/api/mastr")
-def mastr(q: int | None = None) -> list[MastrDataOut]:
-    data = get_data(q)
+def mastr(city: str | None = None) -> list[MastrDataOut]:
+    data = get_data(city)
     return data
 
 

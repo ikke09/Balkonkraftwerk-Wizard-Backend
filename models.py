@@ -1,24 +1,10 @@
-import json
 from pydantic import BaseModel
-import typing
 
 
 class Coords(BaseModel):
     latitude: float
     longitude: float
     altitude: int
-
-
-class Corner(BaseModel):
-    x: int
-    y: int
-
-
-class Boundary(BaseModel):
-    x: int
-    y: int
-    w: int
-    h: int
 
 
 class Version(BaseModel):
@@ -36,20 +22,6 @@ class QAItem(BaseModel):
 class ChecklistItem(BaseModel):
     description: str
     checked: bool = False
-
-
-class BalconyImageIn(BaseModel):
-    base64: str
-    img: typing.Any | None = None
-    width: int | None = 0
-    height: int | None = 0
-    url: str | None = None
-
-
-class BalconyImageOut(BaseModel):
-    area: int = 0
-    boundary: Boundary = Boundary(x=0, y=0, w=0, h=0)
-    corners: list[Corner] = []
 
 
 class UserDataBalcony(BaseModel):
@@ -97,6 +69,3 @@ class MastrDataOut(BaseModel):
     city: str | None = None
     street: str | None = None
     link: str | None = None
-
-    def __str__(self):
-        return f'{self.name} ({self.id}) - {self.street} {self.zip} {self.state}'

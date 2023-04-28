@@ -1,4 +1,3 @@
-import pandas as pd
 from models import MastrDataOut
 import requests
 

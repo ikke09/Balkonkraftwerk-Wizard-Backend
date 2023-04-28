@@ -1,18 +1,11 @@
 import json
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse
 import uvicorn
-from coords import get_coords
-from kpi import calculate_kpi
 from kpi_pvgis import calculate_kpi_pvgis
-from kpi_pvlib import calculate_kpi_pvlib
-from models import Version, Coords, UserDataIn, KpiResult, BalconyImageIn, BalconyImageOut, QAItem, ChecklistItem, MastrDataOut
-from balcony_metadata import extract_metadata
+from models import Version, UserDataIn, KpiResult, QAItem, ChecklistItem, MastrDataOut
 from mastr import get_data
-
 from dotenv import load_dotenv
 
-from radiation import get_radiation
 load_dotenv()
 
 app = FastAPI()
@@ -21,24 +14,6 @@ app = FastAPI()
 @app.get("/api")
 async def version() -> Version:
     return Version()
-
-
-@app.get("/api/coords")
-def coords(zip: int, city: str) -> Coords:
-    coordinates = get_coords(zip, city)
-    if coordinates is None:
-        raise HTTPException(
-            status_code=400, detail=f"Could not retrieve coordinates for {zip}")
-    return coordinates
-
-
-@app.post("/api/radiation")
-def radiation(coordinates: Coords) -> float:
-    radiation = get_radiation(coordinates, 2022)
-    if radiation is None:
-        raise HTTPException(
-            status_code=400, detail=f"Could not retrieve radiation for {coordinates}")
-    return radiation
 
 
 @app.get("/api/info")
@@ -51,33 +26,6 @@ def info() -> list[QAItem]:
     return qa
 
 
-@app.post("/api/balcony")
-def balcony(data: BalconyImageIn) -> BalconyImageOut:
-    res = extract_metadata(balcony=data)
-    if res is None:
-        raise HTTPException(
-            status_code=400, detail="Image could not be processed")
-    return res
-
-
-@app.post("/api/kpi")
-def kpi(data: UserDataIn) -> KpiResult:
-    res = calculate_kpi(data)
-    if res is None:
-        raise HTTPException(
-            status_code=400, detail="Datenverarbeitung nicht akzeptiert")
-    return res
-
-
-@app.post("/api/pvlib")
-def pvlib(data: UserDataIn) -> KpiResult:
-    res = calculate_kpi_pvlib(data)
-    if res is None:
-        raise HTTPException(
-            status_code=400, detail="Datenverarbeitung nicht akzeptiert")
-    return res
-
-
 @app.post("/api/pvgis")
 def pvgis(data: UserDataIn) -> KpiResult:
     res = calculate_kpi_pvgis(data)
@@ -85,12 +33,6 @@ def pvgis(data: UserDataIn) -> KpiResult:
         raise HTTPException(
             status_code=400, detail="Datenverarbeitung nicht akzeptiert")
     return res
-
-
-@app.get("/api/ar")
-def ar() -> FileResponse:
-    filename = "pv.gltf"
-    return FileResponse(filename, media_type="model/gltf+json")
 
 
 @app.get("/api/checklist")

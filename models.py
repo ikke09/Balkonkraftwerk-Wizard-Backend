@@ -1,3 +1,4 @@
+import os
 from pydantic import BaseModel
 
 
@@ -33,7 +34,7 @@ class UserDataPV(BaseModel):
     module_count: int = 2
     module_power: int = 300
     angle: int = 90
-    investment: int = 1000
+    investment: int = int(os.getenv('INVEST_PRICE', 1000))
 
 
 class UserDataConsumption(BaseModel):

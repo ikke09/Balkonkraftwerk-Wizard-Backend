@@ -15,3 +15,7 @@ The whole code is written in Python3.
 5. Install dependencies `pip install -r ./requirements.txt`
 
 After these steps, you should be able to run the backend via `python api.py` without any errors in the console. The Backend defaults to Port 8000.
+
+## Settings
+
+You can change some assumptions by editing the .env file. Before that you must duplicate the .env.example file to a .env file. After that you can change the values in there!

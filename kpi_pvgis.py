@@ -1,4 +1,5 @@
 
+import os
 from models import KpiResult, UserDataIn
 import requests
 
@@ -11,14 +12,14 @@ def calculate_kpi_pvgis(data: UserDataIn) -> KpiResult | None:
     orientation = {'S': 0.0, 'SW': 45.0, 'W': 90.0, 'NW': 135.0, 'N': -180.0,
                    'NO': -135.0, 'O': -90.0, 'SO': -45.0}[data.Balcony.alignment]
     invest = data.PV.investment
-    self_consumption = 0.70
+    self_consumption = float(os.getenv('SELF_CONSUMPTION', 40)) / 100
     params = {
         "lat": data.Location.latitude,
         "lon": data.Location.longitude,
         "peakpower": (data.PV.module_power * data.PV.module_count) / 1000,
         "mountingplace": "free",
         "angle": data.PV.angle,
-        "loss": 14.0,
+        "loss": float(os.getenv('SYSTEMLOSS', 14.0)),
         "aspect": orientation,
         "pvprice": 1,
         "systemcost": invest,

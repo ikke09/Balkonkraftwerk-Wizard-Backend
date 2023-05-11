@@ -19,7 +19,7 @@ def calculate_kpi_pvgis(data: UserDataIn) -> KpiResult | None:
         "SO": -45.0,
     }[data.Balcony.alignment]
     invest = data.PV.investment
-    self_consumption = float(os.getenv("SELF_CONSUMPTION", 40)) / 100
+    self_consumption = float(os.getenv("SELF_CONSUMPTION", 80)) / 100
     params = {
         "lat": data.Location.latitude,
         "lon": data.Location.longitude,
